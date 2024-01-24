@@ -1,0 +1,14 @@
+<h1> A APLICAÇÃO DAS ENQUETES </h1>
+<h2> Enquetes lançadas: </h2>
+{% if perguntas == '' %}
+  <p> nenhuma enquete encontrada </p>
+{% else %}
+<ul>
+  {% for pergunta in perguntas %}
+  <li> <a href="visualizarEnquete/{{ pergunta.id }}/"> {{ pergunta.texto }} </a> </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+<h2> Lançar uma nova enquete ! </h2>
+<a href="criarEnquete/"> criarEnquete </a>

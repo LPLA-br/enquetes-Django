@@ -1,0 +1,38 @@
+{# requer: consulta, pergunta_id #}
+
+{% if consulta == '' and opcoes == '' %}
+  <h1> BUSCA SEM RESULTADOS </h1>
+  <p> {{consulta}} </p>
+{% else %}
+  <h1> ENQUETE NÚMERO {{ pergunta_id }} </h1>
+  <p> {{ consulta.texto }} </p>
+  <small> criado em: {{ consulta.date }} </small>
+
+  {# POST {voto} #}
+  <form action="" method="post">
+    <fieldset>
+      {% for opt in opcoes %}
+      <label for="{{opt.texto}}"> {{opt.texto}} </label>
+      <input type="radio" id="{{opt.texto}}" name="voto" value="{{opt.texto}}">
+      {% endfor %}
+    </fieldset>
+  </form>
+
+{% endif %}
+
+{# utilizando name definido em urls.py #}
+<button><a href="{% url "enquetes:index" %}"> início </a></button>
+
+{# dispara requisição de deleção de enquete deletarEnquete/:id/ #}
+<button><a href="{% url "enquetes:deletarEnquete" pergunta_id %}"> DELETE </a></button>
+
+<br><br>
+
+<h2> Editar esta enquete </h2>
+<form action="{% url "enquetes:editarEnquetePatch" pergunta_id %}" method="patch">
+  {% csrf_token %}
+  <label for="texto"></label>
+  <input type="text" name="texto" id="texto" required>
+  <button type="submit"> EDITAR </button>
+</form>
+

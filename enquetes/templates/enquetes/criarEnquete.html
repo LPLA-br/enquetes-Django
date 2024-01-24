@@ -1,0 +1,53 @@
+{# criação de enquete #}
+
+<form action="{% url "enquetes:criarEnquetePost" %}" method="post">
+  {% csrf_token %}
+  <label for="texto"></label>
+  <input type="text" name="texto" id="texto" placeholder="pergunta" required>
+  <button type="submit"> LANÇAR ENQUETE </button>
+</form>
+
+<div id="listaEscolhas">
+  {# adição ou remoção dinâmica de opções em um <p></p> #}
+</div>
+
+<div id="contole">
+  <input  id="textoOpt" type="text" placeholder="texto da opção">
+  <button id="add" onclick="add()"> + </button>
+  <button id="rem" onclick="rem()"> - </button>
+</div>
+
+<a href="{% url "enquetes:index" %}"> cancelar </a>
+
+<script type="text/javascript">
+  /* script responsável por adição ou remoção de opções da enquete */
+
+
+  function add()
+  {
+    let listaEscolhas = document.getElementById( "listaEscolhas" );
+    let novaOpcao = document.createElement('p');
+    let textoOpt  = document.getElementById("textoOpt");
+
+    if ( textoOpt.value == '' )
+    {
+      window.alert( "texto da opção não pode estar vazio" );
+      return;
+    }
+
+    novaOpcao.innerHTML = textoOpt.value;
+    listaEscolhas.appendChild( novaOpcao );
+    textoOpt.value = "";
+  }
+
+  function rem( texto="-" )
+  {
+    let listaEscolhas = document.getElementById( "listaEscolhas" );
+    if ( listaEscolhas.lastChild != null )
+    {
+      listaEscolhas.removeChild( listaEscolhas.lastChild );
+    }
+  }
+
+</script>
+
