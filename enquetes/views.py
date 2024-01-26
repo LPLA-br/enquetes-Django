@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -39,12 +41,27 @@ def criarEnquete(request):
 def criarEnquetePost( request ):
     try:
         Texto = request.POST["texto"]
+        escolhas = json.loads( request.POST["perguntas"] ) #{"opcoes":[<str>,<str>...]}
 
-        # campoSGBD=Info
+
+        # cria enquete primeiro
         novaEnquete = Pergunta( texto=Texto, date=timezone.now() )
         novaEnquete.save()
-    except:
+
+        if "opcoes" in escolhas and len(escolhas["opcoes"]) > 0 :
+
+            for elemento in escolhas["opcoes"]:
+                escolha = Escolha( pergunta=novaEnquete, texto=elemento, votes=0 )
+                escolha.save()
+
+        else:
+            err = '"escolhas" não presentes em "perguntas" ou lista vazia: ' + json.dumps(escolhas)
+            raise Exception( err )
+
+    except BaseException as e:
+        print(f"FALHA: {e} ")
         return render( request, "enquetes/erro.html" )
+        novaEnquete.delete() #operação atômica !
 
     return HttpResponseRedirect( reverse( "enquetes:index" ) )
 

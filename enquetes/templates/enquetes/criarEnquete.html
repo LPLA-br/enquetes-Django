@@ -4,7 +4,11 @@
   {% csrf_token %}
   <label for="texto"></label>
   <input type="text" name="texto" id="texto" placeholder="pergunta" required>
-  <button type="submit"> LANÇAR ENQUETE </button>
+  
+  <!-- Contém dados em json extraidos dos <p> internos à #listaEscolhas -->
+  <input type="hidden" name="perguntas" id="perguntas" value="" >
+
+  <button type="submit" onclick="gerarDados()"> LANÇAR ENQUETE </button>
 </form>
 
 <div id="listaEscolhas">
@@ -23,6 +27,7 @@
   /* script responsável por adição ou remoção de opções da enquete */
 
 
+  // adiciona escolha
   function add()
   {
     let listaEscolhas = document.getElementById( "listaEscolhas" );
@@ -40,6 +45,7 @@
     textoOpt.value = "";
   }
 
+  // remove escolha
   function rem( texto="-" )
   {
     let listaEscolhas = document.getElementById( "listaEscolhas" );
@@ -47,6 +53,30 @@
     {
       listaEscolhas.removeChild( listaEscolhas.lastChild );
     }
+  }
+
+  /* extrai dados de #listaEscolhas e os atribui em JSON
+     ao value de um hidden. Trabalha quando submit é pressionado.
+  */
+  function gerarDados()
+  {
+    let listaEscolhas = document.getElementById( "listaEscolhas" );
+    let perguntas = document.getElementById( "perguntas" );
+
+    let dados = {"opcoes":[]} ;
+
+    while ( listaEscolhas.lastChild != null )
+    {
+      let removido = listaEscolhas.removeChild( listaEscolhas.lastChild );
+      dados.opcoes.push( removido.innerText );
+    }
+
+    for ( let i = 0; i < dados.opcoes.length; i++ )
+    {
+      if ( dados.opcoes[i] == null ) dados.opcoes.pop(i);
+    }
+    perguntas.value = JSON.stringify( dados );
+    
   }
 
 </script>
